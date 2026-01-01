@@ -55,7 +55,7 @@ lottie_robot = load_lottieurl("https://lottie.host/5a8b7533-8515-4122-8700-1c313
 lottie_processing = load_lottieurl("https://lottie.host/803855eb-3760-466d-92df-8f5379201f37/hYkH99H46F.json")
 
 def generate_questions_from_ai(role, exp):
-    """Generates 5 questions using the NEW FAST model."""
+    """Generates 5 questions using FAST model."""
     prompt = f"""
     Create 5 short technical interview questions for a {role} ({exp} years exp).
     Output JSON array ONLY:
@@ -63,7 +63,8 @@ def generate_questions_from_ai(role, exp):
     """
     try:
         completion = client.chat.completions.create(
-            model="llama-3.1-8b-instant", # <--- UPDATED MODEL
+            # UPDATED MODEL NAME HERE 👇
+            model="llama-3.1-8b-instant", 
             messages=[{"role": "system", "content": prompt}],
             temperature=0.7
         )
@@ -142,7 +143,7 @@ if st.session_state.page == "Login":
                     st.rerun()
 
 # ==========================================
-# 2. PROFILE SETUP (NO BACK BUTTON)
+# 2. PROFILE SETUP
 # ==========================================
 elif st.session_state.page == "Profile_Setup":
     st.title("📄 Setup Profile")
@@ -187,12 +188,10 @@ elif st.session_state.page == "Interview":
 
     questions = st.session_state.interview_questions
     
-    # --- SIDEBAR FIX: No unwanted codes ---
     with st.sidebar:
         if lottie_robot: st_lottie(lottie_robot, height=150, key="robot_side")
         st.divider()
         st.write(f"Candidate: **{st.session_state.candidate_data['name']}**")
-        
         if len(questions) > 0:
             st.progress(st.session_state.current_q / len(questions))
 
@@ -204,7 +203,6 @@ elif st.session_state.page == "Interview":
 
     st.title("⚡ Quick-Fire Interview")
 
-    # Display Chat History
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
@@ -238,7 +236,8 @@ elif st.session_state.page == "Interview":
                 
                 try:
                     completion = client.chat.completions.create(
-                        model="llama-3.1-8b-instant", # <--- UPDATED MODEL
+                        # UPDATED MODEL NAME HERE 👇
+                        model="llama-3.1-8b-instant", 
                         messages=[{"role": "system", "content": prompt}]
                     )
                     feedback = completion.choices[0].message.content
