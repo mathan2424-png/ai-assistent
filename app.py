@@ -306,4 +306,5 @@ elif st.session_state.page == "Dashboard":
                 with t2: st.info(data.get('resume_text'))
                 with t3: st.write(data.get('email'))
     else:
+
         st.info("No Data.")
