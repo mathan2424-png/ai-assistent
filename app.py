@@ -11,7 +11,7 @@ from streamlit_lottie import st_lottie
 # --- CONFIGURATION ---
 st.set_page_config(page_title="Infinite AI Interviewer", layout="wide", page_icon="🤖")
 
-API_KEY = "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" # Replace if needed
+API_KEY = "GROQ_API_KEY" # Replace if needed
 ADMIN_PASSWORD = "admin" 
 RESULTS_FILE = 'interview_results.json'
 
@@ -308,3 +308,4 @@ elif st.session_state.page == "Dashboard":
     else:
 
         st.info("No Data.")
+
