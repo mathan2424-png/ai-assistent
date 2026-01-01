@@ -55,7 +55,7 @@ lottie_robot = load_lottieurl("https://lottie.host/5a8b7533-8515-4122-8700-1c313
 lottie_processing = load_lottieurl("https://lottie.host/803855eb-3760-466d-92df-8f5379201f37/hYkH99H46F.json")
 
 def generate_questions_from_ai(role, exp):
-    """Generates 5 questions using FAST model."""
+    """Generates 5 questions using the NEW FAST model."""
     prompt = f"""
     Create 5 short technical interview questions for a {role} ({exp} years exp).
     Output JSON array ONLY:
@@ -63,7 +63,7 @@ def generate_questions_from_ai(role, exp):
     """
     try:
         completion = client.chat.completions.create(
-            model="llama3-8b-8192", # SPEED MODEL
+            model="llama-3.1-8b-instant", # <--- UPDATED MODEL
             messages=[{"role": "system", "content": prompt}],
             temperature=0.7
         )
@@ -142,7 +142,7 @@ if st.session_state.page == "Login":
                     st.rerun()
 
 # ==========================================
-# 2. PROFILE SETUP
+# 2. PROFILE SETUP (NO BACK BUTTON)
 # ==========================================
 elif st.session_state.page == "Profile_Setup":
     st.title("📄 Setup Profile")
@@ -164,7 +164,6 @@ elif st.session_state.page == "Profile_Setup":
                     "notice_period": notice, "resume_text": resume_text
                 })
                 
-                # Show loading spinner instead of code
                 with st.spinner("⚡ AI is generating your interview..."):
                     st.session_state.interview_questions = generate_questions_from_ai(role, exp)
                 
@@ -188,13 +187,12 @@ elif st.session_state.page == "Interview":
 
     questions = st.session_state.interview_questions
     
-    # --- SIDEBAR FIX: No unwanted codes showing ---
+    # --- SIDEBAR FIX: No unwanted codes ---
     with st.sidebar:
         if lottie_robot: st_lottie(lottie_robot, height=150, key="robot_side")
         st.divider()
         st.write(f"Candidate: **{st.session_state.candidate_data['name']}**")
         
-        # FIX: Proper If-statement to prevent printing "None" or code objects
         if len(questions) > 0:
             st.progress(st.session_state.current_q / len(questions))
 
@@ -222,7 +220,7 @@ elif st.session_state.page == "Interview":
             with st.chat_message("user"):
                 st.markdown(user_ans)
             
-            # 2. Show LOADING only (No text, no codes)
+            # 2. Show LOADING only
             with st.chat_message("assistant"):
                 placeholder = st.empty()
                 with placeholder:
@@ -231,7 +229,7 @@ elif st.session_state.page == "Interview":
                     else:
                         st.write("🔄 Analyzing...")
 
-                # 3. Process Logic (Hidden)
+                # 3. Process Logic
                 end_time = time.time()
                 time_str = format_time(end_time - st.session_state.start_time)
                 
@@ -240,7 +238,7 @@ elif st.session_state.page == "Interview":
                 
                 try:
                     completion = client.chat.completions.create(
-                        model="llama3-8b-8192", 
+                        model="llama-3.1-8b-instant", # <--- UPDATED MODEL
                         messages=[{"role": "system", "content": prompt}]
                     )
                     feedback = completion.choices[0].message.content
@@ -253,7 +251,7 @@ elif st.session_state.page == "Interview":
                     st.session_state.start_time = time.time()
 
                     # 4. Clear Loading & Show Next Question
-                    placeholder.empty() # Removes the loading animation
+                    placeholder.empty()
 
                     if st.session_state.current_q < len(questions):
                         next_q = questions[st.session_state.current_q]['question']
